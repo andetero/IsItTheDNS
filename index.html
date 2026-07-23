@@ -27,6 +27,12 @@
 </head>
 <body>
   <div>It's always DNS</div>
-  <div>Jason says so</div>
+  <div id="attribution"></div>
+
+  <script>
+    const names = ['Bill', 'Jason', 'John'];
+    const randomName = names[Math.floor(Math.random() * names.length)];
+    document.getElementById('attribution').textContent = `${randomName} says so`;
+  </script>
 </body>
 </html>
