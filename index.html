@@ -17,6 +17,10 @@
       font-size: 3rem;
     }
 
+    #attribution {
+      margin-top: 1em;
+    }
+
     @media (prefers-color-scheme: dark) {
       body {
         background-color: black;
@@ -30,7 +34,7 @@
   <div id="attribution"></div>
 
   <script>
-    const names = ['Bill', 'Jason', 'John'];
+    const names = ['Bill', 'Jason', 'John', 'Alex', 'Jeff', 'Pedro', 'Matt'];
     const randomName = names[Math.floor(Math.random() * names.length)];
     document.getElementById('attribution').textContent = `${randomName} says so`;
   </script>
