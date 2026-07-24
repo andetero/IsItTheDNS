@@ -35,8 +35,11 @@
 
   <script>
     const names = ['Bill', 'Jason', 'John', 'Alex', 'Jeff', 'Pedro', 'Matt', 'Chris'];
-    const randomName = names[Math.floor(Math.random() * names.length)];
-    document.getElementById('attribution').textContent = `${randomName} says so`;
+    const storedIndex = Number.parseInt(localStorage.getItem('nameIndex'), 10);
+    const currentIndex = Number.isInteger(storedIndex) ? storedIndex % names.length : 0;
+
+    document.getElementById('attribution').textContent = `${names[currentIndex]} says so`;
+    localStorage.setItem('nameIndex', String((currentIndex + 1) % names.length));
   </script>
 </body>
 </html>
