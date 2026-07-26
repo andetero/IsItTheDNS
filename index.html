@@ -1,46 +1,142 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Is it the DNS?</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <style>
+    :root {
+      color-scheme: light dark;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background-color: white;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: white;
       color: black;
       font-family: Arial, sans-serif;
-      font-size: 3rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    main {
+      width: min(90vw, 900px);
+      text-align: center;
+    }
+
+    #headline,
+    #attribution {
+      font-size: clamp(2rem, 6vw, 5rem);
+      line-height: 1.15;
     }
 
     #attribution {
       margin-top: 1em;
     }
 
+    #diagnostic {
+      display: none;
+      min-height: 10rem;
+      font-family: "Courier New", monospace;
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+
+    #hint {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      opacity: 0.45;
+    }
+
     @media (prefers-color-scheme: dark) {
       body {
-        background-color: black;
+        background: black;
         color: white;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #hint {
+        display: none;
       }
     }
   </style>
 </head>
 <body>
-  <div>It's always DNS</div>
-  <div id="attribution"></div>
+  <main id="app" role="button" tabindex="0" aria-label="Run DNS diagnostic">
+    <section id="result">
+      <div id="headline">It's always DNS</div>
+      <div id="attribution"></div>
+      <div id="hint">Click anywhere to run diagnostics</div>
+    </section>
+
+    <section id="diagnostic" aria-live="polite"></section>
+  </main>
 
   <script>
     const names = ['Bill', 'Jason', 'John', 'Alex', 'Jeff', 'Pedro', 'Matt', 'Chris'];
     const storedIndex = Number.parseInt(localStorage.getItem('nameIndex'), 10);
     const currentIndex = Number.isInteger(storedIndex) ? storedIndex % names.length : 0;
+    const currentName = names[currentIndex];
 
-    document.getElementById('attribution').textContent = `${names[currentIndex]} says so`;
     localStorage.setItem('nameIndex', String((currentIndex + 1) % names.length));
+
+    const result = document.getElementById('result');
+    const attribution = document.getElementById('attribution');
+    const diagnostic = document.getElementById('diagnostic');
+    const app = document.getElementById('app');
+
+    attribution.textContent = `${currentName} says so`;
+
+    let running = false;
+
+    const wait = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));
+
+    async function runDiagnostic() {
+      if (running) return;
+      running = true;
+
+      result.style.display = 'none';
+      diagnostic.style.display = 'block';
+      diagnostic.textContent = '';
+
+      const steps = [
+        'Checking network...',
+        'Testing gateway...',
+        'Querying resolver...',
+        'Blaming firewall...',
+        'Diagnosis complete:'
+      ];
+
+      for (const step of steps) {
+        diagnostic.textContent += `${step}\n`;
+        await wait(450);
+      }
+
+      await wait(300);
+      diagnostic.textContent += `\nIt's always DNS.\n${currentName} says so.`;
+
+      await wait(2200);
+      diagnostic.style.display = 'none';
+      result.style.display = 'block';
+      running = false;
+    }
+
+    app.addEventListener('click', runDiagnostic);
+    app.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        runDiagnostic();
+      }
+    });
   </script>
 </body>
 </html>
