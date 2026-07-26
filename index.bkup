@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Is it the DNS?</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: white;
+      color: black;
+      font-family: Arial, sans-serif;
+      font-size: 3rem;
+    }
+
+    #attribution {
+      margin-top: 1em;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: black;
+        color: white;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div>It's always DNS</div>
+  <div id="attribution"></div>
+
+  <script>
+    const names = ['Bill', 'Jason', 'John', 'Alex', 'Jeff', 'Pedro', 'Matt', 'Chris'];
+    const storedIndex = Number.parseInt(localStorage.getItem('nameIndex'), 10);
+    const currentIndex = Number.isInteger(storedIndex) ? storedIndex % names.length : 0;
+
+    document.getElementById('attribution').textContent = `${names[currentIndex]} says so`;
+    localStorage.setItem('nameIndex', String((currentIndex + 1) % names.length));
+  </script>
+</body>
+</html>
