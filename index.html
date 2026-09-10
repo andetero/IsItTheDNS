@@ -18,11 +18,10 @@
       --good: #14804a;
       --warn: #9a6700;
       --bad: #b42318;
-      --shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+      --shadow: 0 8px 30px rgba(0,0,0,.06);
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
@@ -46,7 +45,7 @@
       font-size: clamp(3rem, 9vw, 7rem);
       font-weight: 700;
       line-height: 1;
-      letter-spacing: -0.045em;
+      letter-spacing: -.045em;
     }
 
     button {
@@ -54,13 +53,19 @@
       background: var(--accent);
       color: white;
       border-radius: 10px;
-      padding: 0.82rem 1.05rem;
+      padding: .82rem 1.05rem;
       font: inherit;
       font-weight: 700;
       cursor: pointer;
     }
 
-    button:disabled { opacity: 0.55; cursor: wait; }
+    button.secondary {
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    button:disabled { opacity: .55; cursor: wait; }
 
     main {
       width: min(1180px, calc(100% - 2rem));
@@ -77,7 +82,7 @@
     }
 
     .section-title {
-      margin: 0 0 0.4rem;
+      margin: 0 0 .4rem;
       font-size: clamp(1.8rem, 4vw, 2.7rem);
     }
 
@@ -87,17 +92,71 @@
       line-height: 1.5;
     }
 
+    #sharedResult {
+      display: none;
+      margin-bottom: 1rem;
+      padding: 1rem 1.15rem;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    #sharedResult strong { display: block; margin-bottom: .35rem; }
+
+    #providerSummary {
+      display: none;
+      margin-bottom: 1rem;
+      padding: 1.3rem 1.4rem;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      color: var(--muted);
+      font-size: .76rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: .45rem;
+    }
+
+    #providerHeadline {
+      margin: 0;
+      font-size: clamp(1.7rem, 4vw, 2.7rem);
+      overflow-wrap: anywhere;
+    }
+
+    #providerMeta {
+      color: var(--muted);
+      margin-top: .45rem;
+      line-height: 1.45;
+    }
+
+    #verdict {
+      margin-top: .95rem;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: .65rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
     #statusLine {
       min-height: 1.4rem;
       margin: 0 0 1.2rem;
       color: var(--muted);
-      font-size: 0.9rem;
+      font-size: .9rem;
     }
 
     .stats {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.85rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .85rem;
       margin-bottom: 1rem;
     }
 
@@ -113,10 +172,10 @@
 
     .stat-label {
       color: var(--muted);
-      font-size: 0.76rem;
+      font-size: .76rem;
       text-transform: uppercase;
-      letter-spacing: 0.07em;
-      margin-bottom: 0.45rem;
+      letter-spacing: .07em;
+      margin-bottom: .45rem;
     }
 
     .stat-value {
@@ -127,7 +186,7 @@
 
     .grid-2 {
       display: grid;
-      grid-template-columns: 1.35fr 1fr;
+      grid-template-columns: 1.45fr 1fr;
       gap: 1rem;
       margin-bottom: 1rem;
     }
@@ -138,12 +197,12 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.9rem;
+      font-size: .9rem;
     }
 
     th, td {
       text-align: left;
-      padding: 0.68rem 0.45rem;
+      padding: .68rem .45rem;
       border-bottom: 1px solid var(--border);
       vertical-align: top;
     }
@@ -157,15 +216,15 @@
     }
 
     .provider-name { font-weight: 600; }
-    .asn { color: var(--muted); font-size: 0.8rem; margin-top: 0.15rem; }
-    .empty { color: var(--muted); padding: 0.7rem 0; }
+    .asn { color: var(--muted); font-size: .8rem; margin-top: .15rem; }
+    .empty { color: var(--muted); padding: .7rem 0; }
     .good { color: var(--good); }
     .warn { color: var(--warn); }
     .bad { color: var(--bad); }
 
     .note {
       color: var(--muted);
-      font-size: 0.82rem;
+      font-size: .82rem;
       line-height: 1.55;
       margin: 1rem 0 0;
     }
@@ -182,6 +241,7 @@
       main { width: min(100% - 1rem, 1180px); padding-top: 2rem; }
       .section-head { align-items: stretch; flex-direction: column; }
       .stats { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; }
     }
 
     @media (prefers-color-scheme: dark) {
@@ -214,20 +274,41 @@
       <button id="runButton" type="button">Run again</button>
     </div>
 
+    <div id="sharedResult"></div>
+
+    <section id="providerSummary">
+      <div class="eyebrow">Your DNS provider appears to be</div>
+      <h2 id="providerHeadline">Identifying...</h2>
+      <div id="providerMeta"></div>
+      <div id="verdict"></div>
+      <div class="actions">
+        <button id="copyButton" type="button" class="secondary">Copy results</button>
+        <button id="shareButton" type="button" class="secondary">Share result</button>
+      </div>
+    </section>
+
     <div id="statusLine" aria-live="polite">Preparing DNS test...</div>
 
     <section class="stats">
-      <div class="stat">
-        <div class="stat-label">Resolver</div>
-        <div class="stat-value mono" id="statResolver">-</div>
-      </div>
       <div class="stat">
         <div class="stat-label">Resolver Pool</div>
         <div class="stat-value" id="statPool">-</div>
       </div>
       <div class="stat">
+        <div class="stat-label">Observed IP Family</div>
+        <div class="stat-value" id="statFamily">-</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Known Public Resolver</div>
+        <div class="stat-value" id="statKnown">-</div>
+      </div>
+      <div class="stat">
         <div class="stat-label">EDNS Client Subnet</div>
         <div class="stat-value" id="statEcs">-</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Privacy Rating</div>
+        <div class="stat-value" id="statPrivacy">-</div>
       </div>
       <div class="stat">
         <div class="stat-label">Page DNS Lookup</div>
@@ -252,30 +333,64 @@
       <table>
         <tbody>
           <tr><th>Recursive resolver</th><td>Observed from fresh authoritative DNS lookups.</td></tr>
-          <tr><th>Provider / ASN</th><td>Network owner and autonomous system associated with each resolver IP.</td></tr>
-          <tr><th>Resolver rotation</th><td>Multiple probes can reveal a pool of resolver addresses.</td></tr>
+          <tr><th>Provider / ASN</th><td>Network owner and autonomous system associated with each observed resolver IP.</td></tr>
+          <tr><th>Known resolver</th><td>Recognizes common public DNS networks such as Cloudflare, Google, Quad9, OpenDNS, NextDNS and AdGuard when identifiable.</td></tr>
+          <tr><th>IP family</th><td>Shows whether resolver-to-authoritative DNS traffic was observed over IPv4, IPv6, or both. It does not prove the client's local transport to its resolver.</td></tr>
           <tr><th>EDNS Client Subnet</th><td>Shows whether the resolver exposed a client subnet upstream.</td></tr>
-          <tr><th>DNS timing</th><td>Shows probe round-trip timing plus this page's browser navigation DNS timing when available.</td></tr>
+          <tr><th>Privacy rating</th><td>Based only on observable ECS exposure. It does not claim whether DNS is encrypted.</td></tr>
           <tr><th>DoH / DoT encryption</th><td>Cannot be proven from an authoritative resolver test alone.</td></tr>
         </tbody>
       </table>
     </section>
 
-    <p class="note">Resolver detection uses the public, CORS-enabled <a href="https://edns.upset.dev/" target="_blank" rel="noopener noreferrer">edns.upset.dev</a> API. Provider / ASN information is retrieved from public IP registration data. Results identify the visitor's DNS path, not the DNS records for isitthedns.com.</p>
+    <p class="note">Resolver detection uses the public, CORS-enabled <a href="https://edns.upset.dev/" target="_blank" rel="noopener noreferrer">edns.upset.dev</a> API. Provider / ASN information is retrieved from public IP registration data. Shared result links contain provider/category information only and never include resolver IP addresses.</p>
   </main>
 
   <script>
     const runButton = document.getElementById('runButton');
+    const copyButton = document.getElementById('copyButton');
+    const shareButton = document.getElementById('shareButton');
     const statusLine = document.getElementById('statusLine');
+    const providerSummary = document.getElementById('providerSummary');
+    const providerHeadline = document.getElementById('providerHeadline');
+    const providerMeta = document.getElementById('providerMeta');
+    const verdict = document.getElementById('verdict');
+    const sharedResult = document.getElementById('sharedResult');
     const resolverTable = document.getElementById('resolverTable');
     const timingTable = document.getElementById('timingTable');
-    const statResolver = document.getElementById('statResolver');
     const statPool = document.getElementById('statPool');
+    const statFamily = document.getElementById('statFamily');
+    const statKnown = document.getElementById('statKnown');
     const statEcs = document.getElementById('statEcs');
+    const statPrivacy = document.getElementById('statPrivacy');
     const statPageDns = document.getElementById('statPageDns');
 
     const PROBE_COUNT = 8;
     let runningDnsTest = false;
+    let lastReport = null;
+
+    const exactResolvers = new Map([
+      ['1.1.1.1', 'Cloudflare Public DNS'],
+      ['1.0.0.1', 'Cloudflare Public DNS'],
+      ['2606:4700:4700::1111', 'Cloudflare Public DNS'],
+      ['2606:4700:4700::1001', 'Cloudflare Public DNS'],
+      ['8.8.8.8', 'Google Public DNS'],
+      ['8.8.4.4', 'Google Public DNS'],
+      ['2001:4860:4860::8888', 'Google Public DNS'],
+      ['2001:4860:4860::8844', 'Google Public DNS'],
+      ['9.9.9.9', 'Quad9'],
+      ['149.112.112.112', 'Quad9'],
+      ['2620:fe::fe', 'Quad9'],
+      ['2620:fe::9', 'Quad9'],
+      ['208.67.222.222', 'Cisco OpenDNS'],
+      ['208.67.220.220', 'Cisco OpenDNS'],
+      ['2620:119:35::35', 'Cisco OpenDNS'],
+      ['2620:119:53::53', 'Cisco OpenDNS'],
+      ['94.140.14.14', 'AdGuard DNS'],
+      ['94.140.15.15', 'AdGuard DNS'],
+      ['45.90.28.0', 'NextDNS'],
+      ['45.90.30.0', 'NextDNS']
+    ]);
 
     function escapeHtml(value) {
       return String(value)
@@ -323,18 +438,11 @@
 
     async function resolverProbe() {
       const started = performance.now();
-      const response = await fetch('https://edns.upset.dev/', {
-        cache: 'no-store',
-        redirect: 'follow'
-      });
+      const response = await fetch('https://edns.upset.dev/', { cache: 'no-store', redirect: 'follow' });
       const ms = performance.now() - started;
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const payload = await response.json();
-      return {
-        dns: readable(payload.dns),
-        edns: readable(payload.edns),
-        ms
-      };
+      return { dns: readable(payload.dns), edns: readable(payload.edns), ms };
     }
 
     async function lookupProvider(ip) {
@@ -354,95 +462,285 @@
       }
     }
 
+    function identifyKnownResolver(ip, network) {
+      const exact = exactResolvers.get(ip.toLowerCase());
+      if (exact) return exact;
+
+      const text = [network?.provider, network?.org, network?.asn].filter(Boolean).join(' ').toLowerCase();
+      if (text.includes('cloudflare') || text.includes('as13335')) return 'Cloudflare';
+      if (text.includes('google') || text.includes('as15169')) return 'Google Public DNS';
+      if (text.includes('quad9')) return 'Quad9';
+      if (text.includes('opendns') || text.includes('cisco umbrella')) return 'Cisco OpenDNS';
+      if (text.includes('nextdns')) return 'NextDNS';
+      if (text.includes('adguard')) return 'AdGuard DNS';
+      if (text.includes('controld') || text.includes('control d')) return 'Control D';
+      if (text.includes('cleanbrowsing')) return 'CleanBrowsing';
+      return null;
+    }
+
     async function enrichResolvers(resolvers) {
-      return Promise.all(resolvers.map(async ([ip, count]) => ({
-        ip,
-        count,
-        network: await lookupProvider(ip)
-      })));
+      return Promise.all(resolvers.map(async ([ip, count]) => {
+        const network = await lookupProvider(ip);
+        return {
+          ip,
+          count,
+          family: ip.includes(':') ? 'IPv6' : 'IPv4',
+          network,
+          known: identifyKnownResolver(ip, network)
+        };
+      }));
+    }
+
+    function weightedWinner(entries, valueFn) {
+      const totals = new Map();
+      for (const entry of entries) {
+        const value = valueFn(entry);
+        if (!value) continue;
+        totals.set(value, (totals.get(value) || 0) + entry.count);
+      }
+      return [...totals.entries()].sort((a, b) => b[1] - a[1])[0] || null;
+    }
+
+    function familySummary(entries) {
+      const has4 = entries.some(entry => entry.family === 'IPv4');
+      const has6 = entries.some(entry => entry.family === 'IPv6');
+      if (has4 && has6) return 'IPv4 + IPv6';
+      if (has6) return 'IPv6 only';
+      if (has4) return 'IPv4 only';
+      return 'Unavailable';
+    }
+
+    function privacyRating(ecsExposed, successfulProbes) {
+      if (!successfulProbes) return { grade: '?', text: 'Unknown', className: '' };
+      return ecsExposed
+        ? { grade: 'C', text: 'ECS exposed', className: 'warn' }
+        : { grade: 'A', text: 'No ECS observed', className: 'good' };
+    }
+
+    function makeVerdict(report) {
+      if (report.ecsExposed) return 'DNS is telling strangers about you. Classic.';
+      if (report.family === 'IPv4 + IPv6') return 'Two IP families. One inevitable culprit.';
+      if (report.resolverCount > 1) return 'Multiple resolvers answered. DNS brought friends.';
+      if (report.knownResolver) return 'DNS looks fine. Suspicious.';
+      return 'DNS appears functional. For now.';
     }
 
     function renderTiming(results, failures) {
       const timings = results.map(result => result.ms);
-      const min = timings.length ? Math.min(...timings) : 0;
-      const max = timings.length ? Math.max(...timings) : 0;
-      timingTable.innerHTML = timings.length
-        ? `<table><tbody>
-            <tr><th>Successful probes</th><td>${results.length} / ${PROBE_COUNT}</td></tr>
-            <tr><th>Fastest probe</th><td>${Math.round(min)} ms</td></tr>
-            <tr><th>Median probe</th><td>${Math.round(median(timings))} ms</td></tr>
-            <tr><th>Average probe</th><td>${Math.round(avg(timings))} ms</td></tr>
-            <tr><th>Slowest probe</th><td>${Math.round(max)} ms</td></tr>
-            <tr><th>Failed probes</th><td>${failures}</td></tr>
-          </tbody></table>`
-        : '<div class="empty">No timing data available.</div>';
+      if (!timings.length) {
+        timingTable.innerHTML = '<div class="empty">No timing data available.</div>';
+        return;
+      }
+
+      timingTable.innerHTML = `<table><tbody>
+        <tr><th>Successful probes</th><td>${results.length} / ${PROBE_COUNT}</td></tr>
+        <tr><th>Fastest probe</th><td>${Math.round(Math.min(...timings))} ms</td></tr>
+        <tr><th>Median probe</th><td>${Math.round(median(timings))} ms</td></tr>
+        <tr><th>Average probe</th><td>${Math.round(avg(timings))} ms</td></tr>
+        <tr><th>Slowest probe</th><td>${Math.round(Math.max(...timings))} ms</td></tr>
+        <tr><th>Failed probes</th><td>${failures}</td></tr>
+      </tbody></table>`;
     }
 
     async function renderResults(results, failures) {
       const resolverCounts = new Map();
-      const ecsCounts = new Map();
+      const ecsValues = [];
 
       for (const result of results) {
         if (result.dns) resolverCounts.set(result.dns, (resolverCounts.get(result.dns) || 0) + 1);
-        const ecsKey = result.edns || 'None observed';
-        ecsCounts.set(ecsKey, (ecsCounts.get(ecsKey) || 0) + 1);
+        if (result.edns) ecsValues.push(result.edns);
       }
 
       const resolvers = [...resolverCounts.entries()].sort((a, b) => b[1] - a[1]);
-      const ecsValues = [...ecsCounts.entries()].sort((a, b) => b[1] - a[1]);
+      const ecsExposed = ecsValues.length > 0;
 
-      statResolver.textContent = resolvers.length ? resolvers[0][0] : 'Unavailable';
       statPool.textContent = resolvers.length ? `${resolvers.length} observed` : 'Unavailable';
-
-      const exposedEcs = ecsValues.filter(([value]) => value !== 'None observed');
-      statEcs.textContent = exposedEcs.length ? exposedEcs[0][0] : 'None observed';
-      statEcs.className = `stat-value ${exposedEcs.length ? 'warn' : 'good'}`;
+      statEcs.textContent = ecsExposed ? ecsValues[0] : 'None observed';
+      statEcs.className = `stat-value ${ecsExposed ? 'warn' : 'good'}`;
 
       const pageDns = getPageDnsTiming();
-      statPageDns.textContent = pageDns === null ? 'Unavailable' : (pageDns < 0.1 ? '0 ms (cached)' : `${pageDns.toFixed(1)} ms`);
-
+      statPageDns.textContent = pageDns === null ? 'Unavailable' : (pageDns < .1 ? '0 ms (cached)' : `${pageDns.toFixed(1)} ms`);
       renderTiming(results, failures);
 
       if (!resolvers.length) {
         resolverTable.innerHTML = '<div class="empty">No resolver address was returned.</div>';
-        return;
+        return null;
       }
 
-      resolverTable.innerHTML = '<div class="empty">Identifying network providers...</div>';
+      resolverTable.innerHTML = '<div class="empty">Identifying resolver networks...</div>';
       const enriched = await enrichResolvers(resolvers);
+      const family = familySummary(enriched);
+      const knownWinner = weightedWinner(enriched, entry => entry.known);
+      const providerWinner = weightedWinner(enriched, entry => entry.network?.provider || entry.network?.org);
+      const asnWinner = weightedWinner(enriched, entry => entry.network?.asn);
+      const privacy = privacyRating(ecsExposed, results.length);
 
-      resolverTable.innerHTML = `
-        <table>
-          <thead><tr><th>Resolver</th><th>Provider / ASN</th><th>Seen</th><th>Share</th></tr></thead>
-          <tbody>
-            ${enriched.map(item => {
-              const provider = item.network?.provider || item.network?.org || 'Unknown';
-              const org = item.network?.org;
-              const asn = item.network?.asn;
-              const providerDetails = [org && org !== provider ? org : null, asn].filter(Boolean).join(' · ');
-              return `<tr>
-                <td class="mono">${escapeHtml(item.ip)}</td>
-                <td><div class="provider-name">${escapeHtml(provider)}</div>${providerDetails ? `<div class="asn">${escapeHtml(providerDetails)}</div>` : ''}</td>
-                <td>${item.count} / ${results.length}</td>
-                <td>${Math.round((item.count / results.length) * 100)}%</td>
-              </tr>`;
-            }).join('')}
-          </tbody>
-        </table>`;
+      const provider = knownWinner?.[0] || providerWinner?.[0] || 'Unknown provider';
+      const knownResolver = knownWinner?.[0] || null;
+      const providerVotes = knownWinner?.[1] || providerWinner?.[1] || 0;
+      const asn = asnWinner?.[0] || null;
+
+      statFamily.textContent = family;
+      statKnown.textContent = knownResolver || 'Not identified';
+      statPrivacy.textContent = `${privacy.grade} - ${privacy.text}`;
+      statPrivacy.className = `stat-value ${privacy.className}`;
+
+      resolverTable.innerHTML = `<table>
+        <thead><tr><th>Resolver</th><th>Provider / ASN</th><th>Known Resolver</th><th>Family</th><th>Seen</th><th>Share</th></tr></thead>
+        <tbody>${enriched.map(item => {
+          const providerName = item.network?.provider || item.network?.org || 'Unknown';
+          const org = item.network?.org;
+          const asnValue = item.network?.asn;
+          const details = [org && org !== providerName ? org : null, asnValue].filter(Boolean).join(' · ');
+          return `<tr>
+            <td class="mono">${escapeHtml(item.ip)}</td>
+            <td><div class="provider-name">${escapeHtml(providerName)}</div>${details ? `<div class="asn">${escapeHtml(details)}</div>` : ''}</td>
+            <td>${escapeHtml(item.known || 'Not identified')}</td>
+            <td>${item.family}</td>
+            <td>${item.count} / ${results.length}</td>
+            <td>${Math.round((item.count / results.length) * 100)}%</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>`;
+
+      const report = {
+        provider,
+        asn,
+        knownResolver,
+        family,
+        ecsExposed,
+        ecsValue: ecsExposed ? ecsValues[0] : null,
+        privacy,
+        resolverCount: enriched.length,
+        successfulProbes: results.length,
+        failures,
+        providerVotes,
+        enriched,
+        timings: results.map(result => result.ms),
+        pageDns
+      };
+
+      report.verdict = makeVerdict(report);
+      lastReport = report;
+
+      providerSummary.style.display = 'block';
+      providerHeadline.textContent = asn && !provider.includes(asn) ? `${provider} (${asn})` : provider;
+      providerMeta.textContent = `${providerVotes || results.length} of ${results.length} successful probes matched the leading provider · ${family} resolver egress`;
+      verdict.textContent = report.verdict;
+
+      return report;
+    }
+
+    function buildCopyText(report) {
+      const timingValues = report.timings || [];
+      const lines = [
+        'IsItTheDNS - Visitor DNS Test',
+        `Provider: ${report.provider}${report.asn ? ` (${report.asn})` : ''}`,
+        `Known public resolver: ${report.knownResolver || 'Not identified'}`,
+        `Observed resolver IP family: ${report.family}`,
+        `EDNS Client Subnet: ${report.ecsExposed ? report.ecsValue : 'None observed'}`,
+        `Privacy rating: ${report.privacy.grade} - ${report.privacy.text}`,
+        `Resolver pool: ${report.resolverCount} observed`,
+        `Successful probes: ${report.successfulProbes}/${PROBE_COUNT}`,
+        `Median probe: ${timingValues.length ? `${Math.round(median(timingValues))} ms` : 'Unavailable'}`,
+        `Page DNS lookup: ${report.pageDns === null ? 'Unavailable' : `${report.pageDns.toFixed(1)} ms`}`,
+        '',
+        'Resolvers:'
+      ];
+
+      for (const item of report.enriched) {
+        const networkName = item.network?.provider || item.network?.org || 'Unknown';
+        lines.push(`- ${item.ip} | ${networkName}${item.network?.asn ? ` ${item.network.asn}` : ''} | ${item.family} | ${item.count}/${report.successfulProbes}`);
+      }
+
+      lines.push('', `Verdict: ${report.verdict}`);
+      return lines.join('\n');
+    }
+
+    function buildShareUrl(report) {
+      const url = new URL(window.location.origin + window.location.pathname);
+      url.searchParams.set('shared', '1');
+      url.searchParams.set('provider', report.provider);
+      url.searchParams.set('known', report.knownResolver || 'Not identified');
+      url.searchParams.set('family', report.family);
+      url.searchParams.set('ecs', report.ecsExposed ? 'yes' : 'no');
+      url.searchParams.set('privacy', report.privacy.grade);
+      return url.toString();
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (_) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        const ok = document.execCommand('copy');
+        textarea.remove();
+        return ok;
+      }
+    }
+
+    copyButton.addEventListener('click', async () => {
+      if (!lastReport) return;
+      const original = copyButton.textContent;
+      const ok = await copyText(buildCopyText(lastReport));
+      copyButton.textContent = ok ? 'Copied' : 'Copy failed';
+      setTimeout(() => { copyButton.textContent = original; }, 1400);
+    });
+
+    shareButton.addEventListener('click', async () => {
+      if (!lastReport) return;
+      const url = buildShareUrl(lastReport);
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: 'My DNS result', text: `${lastReport.provider} · ${lastReport.family} · Privacy ${lastReport.privacy.grade}`, url });
+          return;
+        } catch (error) {
+          if (error?.name === 'AbortError') return;
+        }
+      }
+      const original = shareButton.textContent;
+      const ok = await copyText(url);
+      shareButton.textContent = ok ? 'Link copied' : 'Share failed';
+      setTimeout(() => { shareButton.textContent = original; }, 1400);
+    });
+
+    function renderSharedResult() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('shared') !== '1') return;
+
+      const provider = params.get('provider') || 'Unknown provider';
+      const known = params.get('known') || 'Not identified';
+      const family = params.get('family') || 'Unknown';
+      const ecs = params.get('ecs') === 'yes' ? 'ECS exposed' : 'No ECS observed';
+      const privacy = params.get('privacy') || '?';
+
+      sharedResult.innerHTML = `<strong>Shared DNS result</strong>${escapeHtml(provider)} · ${escapeHtml(known)} · ${escapeHtml(family)} · ${escapeHtml(ecs)} · Privacy ${escapeHtml(privacy)}<div class="note" style="margin-top:.4rem">This shared summary contains no resolver IP addresses. Your own live DNS test appears below.</div>`;
+      sharedResult.style.display = 'block';
     }
 
     async function runDnsTest() {
       if (runningDnsTest) return;
       runningDnsTest = true;
+      lastReport = null;
+      providerSummary.style.display = 'none';
       runButton.disabled = true;
       runButton.textContent = 'Testing...';
       statusLine.textContent = `Running ${PROBE_COUNT} fresh DNS probes...`;
       resolverTable.innerHTML = '<div class="empty">Watching which resolver reaches the authoritative DNS service...</div>';
       timingTable.innerHTML = '<div class="empty">Measuring probe round trips...</div>';
-      statResolver.textContent = '-';
       statPool.textContent = '-';
+      statFamily.textContent = '-';
+      statKnown.textContent = '-';
       statEcs.textContent = '-';
       statEcs.className = 'stat-value';
+      statPrivacy.textContent = '-';
+      statPrivacy.className = 'stat-value';
 
       const results = [];
       let failures = 0;
@@ -458,12 +756,15 @@
       }
 
       if (results.length) {
-        statusLine.textContent = 'Identifying resolver providers...';
+        statusLine.textContent = 'Identifying resolver provider and network...';
         await renderResults(results, failures);
         statusLine.textContent = `Live DNS test completed at ${new Date().toLocaleTimeString()}.`;
       } else {
         renderTiming(results, failures);
         resolverTable.innerHTML = '<div class="empty">No resolver address was returned.</div>';
+        statFamily.textContent = 'Unavailable';
+        statKnown.textContent = 'Unavailable';
+        statPrivacy.textContent = '? - Unknown';
         statusLine.textContent = 'DNS resolver test unavailable. The public detection service may be blocked or rate-limited.';
       }
 
@@ -474,8 +775,9 @@
 
     runButton.addEventListener('click', runDnsTest);
 
-    const pageDns = getPageDnsTiming();
-    statPageDns.textContent = pageDns === null ? 'Unavailable' : (pageDns < 0.1 ? '0 ms (cached)' : `${pageDns.toFixed(1)} ms`);
+    renderSharedResult();
+    const initialPageDns = getPageDnsTiming();
+    statPageDns.textContent = initialPageDns === null ? 'Unavailable' : (initialPageDns < .1 ? '0 ms (cached)' : `${initialPageDns.toFixed(1)} ms`);
     runDnsTest();
   </script>
 </body>
