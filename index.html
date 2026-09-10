@@ -328,21 +328,6 @@
       </div>
     </section>
 
-    <section class="panel">
-      <h3>What this can actually prove</h3>
-      <table>
-        <tbody>
-          <tr><th>Recursive resolver</th><td>Observed from fresh authoritative DNS lookups.</td></tr>
-          <tr><th>Provider / ASN</th><td>Network owner and autonomous system associated with each observed resolver IP.</td></tr>
-          <tr><th>Known resolver</th><td>Recognizes common public DNS networks such as Cloudflare, Google, Quad9, OpenDNS, NextDNS and AdGuard when identifiable.</td></tr>
-          <tr><th>IP family</th><td>Shows whether resolver-to-authoritative DNS traffic was observed over IPv4, IPv6, or both. It does not prove the client's local transport to its resolver.</td></tr>
-          <tr><th>EDNS Client Subnet</th><td>Shows whether the resolver exposed a client subnet upstream.</td></tr>
-          <tr><th>Privacy rating</th><td>Based only on observable ECS exposure. It does not claim whether DNS is encrypted.</td></tr>
-          <tr><th>DoH / DoT encryption</th><td>Cannot be proven from an authoritative resolver test alone.</td></tr>
-        </tbody>
-      </table>
-    </section>
-
     <p class="note">Resolver detection uses the public, CORS-enabled <a href="https://edns.upset.dev/" target="_blank" rel="noopener noreferrer">edns.upset.dev</a> API. Provider / ASN information is retrieved from public IP registration data. Shared result links contain provider/category information only and never include resolver IP addresses.</p>
   </main>
 
